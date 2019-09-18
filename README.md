@@ -1,4 +1,3 @@
-# coding
+# 오늘은 좋은 날
 
-This folder is for My Practice
-blah blah blah
+네이버웹페이지 연결
