@@ -1,0 +1,133 @@
+---
+title: "sentiment analysis"
+output: html_document
+---
+
+### 01. 데이터 준비 및 사전 준비
+```{r}
+
+rm(list=ls())
+library(wordcloud)
+
+library(KoNLP)
+
+useSejongDic()
+
+fname = "D:\\R\\난민 유튜브 댓글1.txt"
+road1 = readLines(fname)
+```
+
+
+### 02. 긍정단어 부정단어 불러오기
+```{r}
+pos.words = scan("D:\\R\\pos_kor_words.txt", what="character", comment.char=";")
+neg.words = scan("D:\\R\\neg_kor_words.txt",what="character", comment.char=";")
+```
+
+
+
+### 01. 데이터 준비 및 사전 준비
+```{r}
+
+rm(list=ls())
+library(wordcloud)
+
+library(KoNLP)
+
+useSejongDic()
+
+fname = "D:\\R\\난민 유튜브 댓글1.txt"
+road1 = readLines(fname)
+
+pos.words = scan("D://R//pos_kor_words.txt", what="character", comment.char=";")
+neg.words = scan("D://R//neg_kor_words.txt", what="character", comment.char=";")
+
+```
+
+
+### 03. 불러온 텍스트 전처리
+```{r}
+
+require(plyr)
+require(stringr)
+
+
+sentence <- road1
+
+# 구두점 문자, ! " # $ % & ’ ( ) * + , - . / : ; < = > ? @ [  ] ^ _ ` { | } ~. 제거
+sentence <- gsub('[[:punct:]]', "", sentence)  
+# \n, \r 같은 제어문자 등 제거
+sentence <- gsub('[[:cntrl:]]', "", sentence)
+# 숫자 제거
+sentence <- gsub('\\d+', "", sentence)
+head(sentence)
+
+length(sentence) 
+```
+
+
+##04. 명사 추출
+```{r}
+# ,autoSpacing = TRUE
+#### 명사 추출
+wordlist <- sapply(sentence, extractNoun, USE.NAMES=F)
+
+words <- unlist(wordlist)   # 단어를 하나의 벡터로 
+head(words)
+
+length(words)  
+```
+##05. 감성 분석을 위한 점수 확인
+```{r}
+pos.matches <- match(words, pos.words)  ## 긍정단어, 부정단어 확인
+neg.matches <- match(words, neg.words)  ## 단어 존재(사전에서 위치), 없으면 NA
+
+pos.matches
+neg.matches
+
+pos.matches <- !is.na(pos.matches)  # NA가 아닌것 가져오기(문장에 단어 있음)
+neg.matches <- !is.na(neg.matches)
+sum(pos.matches)  # 점수 합(긍정단어)
+
+sum(neg.matches)  # 점수 합(부정단어) 
+
+score <- sum(pos.matches) - sum(neg.matches)
+
+#단어 확인 및 빈도에 따른 정렬
+pos_word <- words[pos.matches ]
+neg_word <- words[neg.matches ]
+
+pos_cnt <- table(pos_word)
+neg_cnt <- table(neg_word)
+
+pos_cnt_sort <- sort(pos_cnt, decreasing = T)
+neg_cnt_sort <- sort(neg_cnt, decreasing = T)
+```
+##06. 워드 클라우드
+```{r}
+#install.packages("wordcloud")
+library(wordcloud)
+library(RColorBrewer)
+pal <- brewer.pal(6, "Dark2")
+pal
+
+
+windowsFonts(malgun=windowsFont("맑은 고딕"))
+set.seed(1000)
+
+wordcloud(word=names(pos_cnt),
+          freq=pos_cnt,
+          colors=pal,
+          min.freq=1,
+          random.order=F,
+          family="malgun")
+```
+```{r}
+wordcloud(word=names(neg_cnt),
+          freq=neg_cnt,
+          colors=pal,
+          min.freq=1,
+          random.order=F,
+          family="malgun")
+```
+
