@@ -5,4 +5,4 @@
 * [메인 웹페이지](https://luzaina.github.io/00_TEST/)
 * [감정분석 소스 및 결과](https://luzaina.github.io/00_TEST/난민유튜브댓글분석-샘플1.html)
 * [first.html](https://luzaina.github.io/00_TEST/first.html)
-* [난민신청자 막대그래프](https://luzaina.github.io/00_TEST/난민 신청자 현황 막대그래프.html)
+* [난민신청자 막대그래프](https://luzaina.github.io/00_TEST/난민신청자현황막대그래프.html)
